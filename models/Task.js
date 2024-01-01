@@ -64,8 +64,18 @@ function validateCreateTask(obj) {
   return schema.validate(obj);
 }
 
+function validateUpdateTask(obj) {
+  const schema = Joi.object({
+    title: Joi.string().trim().min(5).max(100),
+    deadline:Joi.string().trim().min(6).max(100),
+    description: Joi.string().trim().min(10).max(300),
+  });
+  return schema.validate(obj);
+}
+
 
 module.exports = {
   Task,
   validateCreateTask,
+  validateUpdateTask
 };

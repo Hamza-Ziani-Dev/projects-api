@@ -4,7 +4,9 @@ const validateObjectId = require("../middlewares/validateObjectId");
 const photoUpload = require("../middlewares/photoUpload");
 const {
     createTaskCtrl,
-    getAllTasksCtrl
+    getAllTasksCtrl,
+    deleteTasksCtrl,
+    updateTasksCtrl
     // getAllPostsCtrl,
     // getOnePostsCtrl,
     // getCountPostsCtrl,
@@ -21,6 +23,12 @@ router.route("/")
 .get(verifyToken,getAllTasksCtrl)
 .post(verifyToken,photoUpload.single("image"),createTaskCtrl);
 
+
+
+// /api/tasks/:id
+router.route("/:id")
+.put(validateObjectId,updateTasksCtrl)
+.delete(validateObjectId,deleteTasksCtrl);
 
 
 
