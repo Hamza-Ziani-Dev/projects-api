@@ -1,8 +1,6 @@
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 const {User, validateUpdateUser} = require('../models/User');
-const {Post } = require("../models/Post");
-const { Comment } = require("../models/Comment");
 const {
   cloudinaryUploadImage,
   cloudinaryRemoveImage,
@@ -10,6 +8,7 @@ const {
 } = require("../utils/cloudinary");
 const path = require('path');
 const fs = require('fs');
+const { Task } = require('../models/Task');
 
 
 /**------------- Get Users Count ----------------------------------
@@ -19,9 +18,10 @@ const fs = require('fs');
  * @access  private (only admin)
  ------------------------------------------------*/
  const getUsersCountCtrl = asyncHandler(async (req, res) => {
-   const count = await User.count();
-   res.status(200).json(count);
- });
+  const count = await User.countDocuments({});
+  res.status(200).json(count);
+});
+
 
 
 
@@ -32,7 +32,6 @@ const fs = require('fs');
  * @access  private (Only Admin)
  ------------------------------------------------*/
  const getAllUsersCtrl = asyncHandler (async (req,res,next)=>{
-    
     const users = await User.find().select("-password");
     res.status(200).json(users);
 
@@ -49,7 +48,6 @@ const fs = require('fs');
   if (!user) {
     return res.status(404).json({ message: "User Not Found" });
   }
-
   res.status(200).json(user);
 });
 
@@ -100,25 +98,25 @@ const fs = require('fs');
     return res.status(404).json({ message: "user not found" });
   }
 
-//   // 2. Get all posts from DB
-  const posts = await Post.find({ user: user._id });
+//   // 2. Get all tasks from DB
+  // const tasks = await Task.find({ user: user._id });
 
 //   // 3. Get the public ids from the posts
-  const publicIds = posts?.map((post) => post.image.publicId);
+  // const publicIds = tasks?.map((task) => task.image.publicId);
 
-//   // 4. Delete all posts image from cloudinary that belong to this user
-  if(publicIds?.length > 0) {
-    await cloudinaryRemoveMultipleImage(publicIds);
-  }
+//   // 4. Delete all tasks image from cloudinary that belong to this user
+  // if(publicIds?.length > 0) {
+  //   await cloudinaryRemoveMultipleImage(publicIds);
+  // }
 
 //   // 5. Delete the profile picture from cloudinary
   if(user.profilePhoto.publicId !== null) {
     await cloudinaryRemoveImage(user.profilePhoto.publicId);
   }
   
-//   // 6. Delete user posts & comments
-   await Post.deleteMany({ user: user._id });
-   await Comment.deleteMany({ user: user._id });
+//   // 6. Delete user tasks & comments
+   await Task.deleteMany({ user: user._id });
+  //  await Comment.deleteMany({ user: user._id });
 
 //   // 7. Delete the user himself
   const userDelete = await User.findByIdAndDelete(req.params.id);
@@ -145,7 +143,7 @@ const fs = require('fs');
   }
 
   // 2. Get the path to the image
-  const imagePath = path.join(__dirname, `../images/${req.file.filename}`);
+  const imagePath = path.join(__dirname,`../images/${req.file.filename}`);
 
   // // 3. Upload to cloudinary
  const result = await cloudinaryUploadImage(imagePath);

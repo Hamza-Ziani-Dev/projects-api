@@ -6,14 +6,8 @@ const {
     createTaskCtrl,
     getAllTasksCtrl,
     deleteTasksCtrl,
-    updateTasksCtrl
-    // getAllPostsCtrl,
-    // getOnePostsCtrl,
-    // getCountPostsCtrl,
-    // deletePostsCtrl,
-    // updatePostsCtrl,
-    // updatePostImageCtrl,
-    // toggleLikeCtrl
+    updateTasksCtrl,
+    getOneTasksCtrl
 } = require("../controllers/tasksController");
 const router = express.Router();
 
@@ -27,9 +21,9 @@ router.route("/")
 
 // /api/tasks/:id
 router.route("/:id")
+.get(validateObjectId,getOneTasksCtrl)
 .put(validateObjectId,updateTasksCtrl)
 .delete(validateObjectId,deleteTasksCtrl);
-
 
 
 

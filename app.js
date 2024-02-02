@@ -25,10 +25,7 @@ app.use(cors())
 //Routers:
 app.use("/api/auth", require("./routers/authRouter"));
 app.use("/api/users", require("./routers/usersRouter"));
-app.use("/api/posts", require("./routers/postRouter"));
 app.use("/api/tasks", require("./routers/taskRouter"));
-app.use("/api/comments", require("./routers/commentsRouter"));
-app.use("/api/categories", require("./routers/categoriesRouter"));
 
 
 // Error Handler Middleware

@@ -57,6 +57,7 @@ UserSchema.virtual("posts", {
   localField: "_id",
 });
 
+
 // Generate Auth Token
 UserSchema.methods.generateAuthToken = function() {
   return jwt.sign({id: this._id, isAdmin: this.isAdmin}, process.env.JWT_SECRET_KEY);
