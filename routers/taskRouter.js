@@ -7,15 +7,16 @@ const {
     getAllTasksCtrl,
     deleteTasksCtrl,
     updateTasksCtrl,
-    getOneTasksCtrl
+    getOneTasksCtrl,
 } = require("../controllers/tasksController");
 const router = express.Router();
 
 
 // /api/tasks :
 router.route("/")
-.get(verifyToken,getAllTasksCtrl)
+.get(getAllTasksCtrl)
 .post(verifyToken,photoUpload.single("image"),createTaskCtrl);
+
 
 
 

@@ -58,17 +58,31 @@ const {cloudinaryUploadImage, cloudinaryRemoveImage,} = require("../utils/cloudi
  * @access  public
  ------------------------------------------------*/
 const getAllTasksCtrl = asyncHandler(async (req, res) => {
-  const Task_PER_PAGE = 3;
-  const { pageNumber, category } = req.query;
+  const itemsPerPage = 10;
+  const {page,title, status ,deadline, userId } = req.query;
   let tasks;
-  if (pageNumber) {
-    tasks = await Task.find()
-      .skip((pageNumber - 1) * Task_PER_PAGE)
-      .limit(Task_PER_PAGE)
+  const filters = {};
+
+  if (userId) {
+    filters.user = userId;
+  }
+  if (title) {
+    filters.title = title;
+  }
+  if (status) {
+    filters.status = status;
+  }
+  if (deadline) {
+    filters.deadline = { $lte: new Date(deadline) };
+  }
+  if (page) {
+    tasks = await Task.find(filters)
+      .skip((page - 1) * itemsPerPage)
+      .limit(itemsPerPage)
       .sort({ createdAt: -1 })
       .populate("user");
   } else {
-    tasks = await Task.find()
+    tasks = await Task.find(filters)
       .sort({ createdAt: -1 })
       .populate("user");
   }
@@ -126,7 +140,7 @@ const getAllTasksCtrl = asyncHandler(async (req, res) => {
     res.status(400).json({message: errors.details[0].message})
   }
 
-  //Get Post In DB:
+  //Get Task In DB:
   const task = await Task.findById(req.params.id);
   if(!task){
     res.status(400).json({message: "Task Not Found!"})
@@ -156,10 +170,13 @@ const getAllTasksCtrl = asyncHandler(async (req, res) => {
 
 
 
+
+
+
   module.exports = {
     createTaskCtrl,
     getAllTasksCtrl,
     deleteTasksCtrl,
     updateTasksCtrl,
-    getOneTasksCtrl
+    getOneTasksCtrl,
   }
